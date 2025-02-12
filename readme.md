@@ -26,6 +26,8 @@ Um ein neues Zertifikat für einen Service zu generieren kann das `generate-cert
 ./generate-cert.sh servicename.ict-bz.ch
 ```
 
+> Wenn ein neuer Service eingerichtet wird muss der SSL Server im `nginx.conf` zuerst auskommentiert werden bis das Zertifikat generiert wird (der Webserver startet nicht ohne Zertifikat und das Zertifikat kann ohne laufenden Webserver nicht generiert werden.)
+
 #### Zertifikate erneuern
 
 Die Zertifikate müssen jeweils mit `renew-certs.sh` erneuert werden. Dies sollte per Cronjob (`crontab -e`) registriert werden:
