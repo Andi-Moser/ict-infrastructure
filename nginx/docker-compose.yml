@@ -1,0 +1,16 @@
+services:
+  webserver:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro # <-- In this directory lives the nginx configuration file, so we can track it via git
+      - ./data/certbot/www:/var/www/certbot/:ro # <-- This is the directory where certbot will store the challenge files
+      - ./data/certbot/conf/:/etc/nginx/ssl/:ro # <-- This is the directory where certbot will store the certificates
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./data/certbot/www/:/var/www/certbot/:rw # <-- This is the directory where certbot will store the challenge files
+      - ./data/certbot/conf/:/etc/letsencrypt/:rw # <-- This is the directory where certbot will store the certificates

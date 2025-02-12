@@ -1,0 +1,21 @@
+services:
+  moodle_mariadb:
+    image: docker.io/bitnami/mariadb:latest
+    env_file:
+      - .env
+    volumes:
+      - ./data/mariadb:/bitnami/mariadb # <-- This is the data directory, all database files are stored here. Whatever you do, DO NOT DELETE THIS DIRECTORY
+    restart: always
+  moodle:
+    image: docker.io/bitnami/moodle:latest
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+    env_file:
+      - .env
+    volumes:
+      - ./data/moodle_installation:/bitnami/moodle # <-- This is the installation directory, all php files are stored here
+      - ./data/moodle_userdata:/bitnami/moodledata # <-- This is the data directory, all user data is stored here. Whatever you do, DO NOT DELETE THIS DIRECTORY
+    depends_on:
+      - moodle_mariadb
+    restart: always
