@@ -1,6 +1,5 @@
 version: '2'
 
-networks:
 services:
   openldap:
     image: bitnami/openldap:2
