@@ -1,0 +1,16 @@
+version: '2'
+
+networks:
+services:
+  openldap:
+    image: bitnami/openldap:2
+    ports:
+      - '389:1389'
+      - '636:1636'
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=user01,user02
+      - LDAP_PASSWORDS=password1,password2
+    volumes:
+      - './data/ldap:/bitnami/openldap'
