@@ -53,6 +53,10 @@ Damit der MariaDB Server seine Datenverzeichnisse korrekt anlegen kann muss zuer
 
 Der Standard-Admin Zugang lautet `user` / `bitnami`.
 
+#### LDAP Anbindung
+
+[Anleitung](https://docs.moodle.org/405/en/LDAP_authentication)
+
 ### OwnCloud
 
 | Servername `edu12` / IP `10.200.2.112`
@@ -60,6 +64,14 @@ Der Standard-Admin Zugang lautet `user` / `bitnami`.
 #### Installation
 
 Der OwnCloud Service benötigt keine besonderen Vorarbeiten zur Installation.
+
+#### LDAP Anbindung
+
+[Anleitung](https://doc.owncloud.com/server/10.15/admin_manual/configuration/user/user_auth_ldap.html)
+
+#### User Synchronisation
+
+Die LDAP Benutzer können mit dem Befehl `docker compose exec owncloud occ user:sync ldap` in die OwnCloud geladen werden. Am besten wird dieser Befehl als Cronjob eingerichtet.
 
 ### LDAP
 
