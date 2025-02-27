@@ -57,6 +57,10 @@ Der Standard-Admin Zugang lautet `user` / `bitnami`.
 
 [Anleitung](https://docs.moodle.org/405/en/LDAP_authentication)
 
+#### Maximale Dateigrösse
+
+Um den Upload von grossen Files (z.B. für Backups von Kursen) zu ermöglichen muss mit dem Script `copy_htaccess.sh` die `.htaccess` in das Moodle Installationsverzeichniss kopiert werden.
+
 ### OwnCloud
 
 | Servername `edu12` / IP `10.200.2.112`
