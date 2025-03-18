@@ -4,8 +4,8 @@ services:
   openldap:
     image: bitnami/openldap:2
     ports:
-      - '389:1389'
-      - '636:1636'
+      - '1389:1389'
+      - '1636:1636'
     volumes:
       - './data/ldap:/bitnami/openldap'
     env_file:
