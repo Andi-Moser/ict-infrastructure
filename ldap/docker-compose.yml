@@ -10,3 +10,4 @@ services:
       - './data/ldap:/bitnami/openldap'
     env_file:
       - .env
+    restart: always
