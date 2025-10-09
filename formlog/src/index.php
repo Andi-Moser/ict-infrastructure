@@ -41,10 +41,10 @@ if (isset($_GET['toggle'])) {
 
 // Query entries
 if (!empty($_SESSION['own_only'])) {
-    $stmt = $db->prepare("SELECT * FROM posts WHERE session_id = :sid ORDER BY created_at DESC LIMIT 50");
-    $stmt->execute([':sid' => session_id()]);
+  $stmt = $db->query("SELECT * FROM posts ORDER BY created_at DESC LIMIT 50");
 } else {
-    $stmt = $db->query("SELECT * FROM posts ORDER BY created_at DESC LIMIT 50");
+  $stmt = $db->prepare("SELECT * FROM posts WHERE session_id = :sid ORDER BY created_at DESC LIMIT 50");
+  $stmt->execute([':sid' => session_id()]);
 }
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -64,7 +64,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Geispeicherte Einträge</h2>
 
         <div class="flex justify-end">
-            <a class="underline" href="?toggle=1">Ansicht: <?php echo !empty($_SESSION['own_only']) ? 'Eigene Einträge' : 'Alle Einträge'; ?></a>
+            <a class="underline" href="?toggle=1">Ansicht: <?php echo !empty($_SESSION['own_only']) ? 'Alle Einträge' : 'Eigene Einträge'; ?></a>
         </div>
 
         <div class="shadow-md sm:rounded-lg">
