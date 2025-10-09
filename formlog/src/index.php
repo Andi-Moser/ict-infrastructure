@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
 // SQLite init
@@ -77,12 +80,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $row): 
+                    <?php foreach ($rows as $row):
                         $data = json_decode($row['data'], true) ?: [];
-                        $name = $data['name'] ?? '';
-                        $firstname = $data['firstname'] ?? data['vorname'] ?? '';
-                        $email = $data['email'] ?? '';
-                        $comment = $data['comment'] ?? '';
+                        $name = $data['name'] ?? $data['lastname'] ?? $data['nachname'] ?? $data['Nachname'] ?? $data['Name'] ?? $data['Lastname'] ??   '';
+                        $firstname = $data['firstname'] ?? $data['vorname'] ?? $data['Firstname'] ?? $data['Vorname'] ??  '';
+                        $email = $data['email'] ?? $data['e-mail'] ?? $data['Email'] ?? $data['E-mail'] ?? $data['E-Mail'] ?? '';
                     ?>
                         <tr class="cursor-pointer odd:bg-white even:bg-gray-50 border-b border-gray-200" onclick="showDetails(this)" data-json='<?= str_replace("\\r\\n", "<br>", nl2br(json_encode($data, JSON_HEX_APOS | JSON_HEX_QUOT))) ?>' data-created='<?= date('d.m.Y H:i:s', $row['created_at']) ?>'>
                             <td class="px-6 py-3"><?= $row['id'] ?></td>
@@ -118,7 +120,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <input 
         id="firstname"
         type="text" 
-        name="firstname" 
+        name="name" 
         placeholder="Vorname"
         class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
@@ -172,9 +174,10 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const data = JSON.parse(row.dataset.json);
             let html = '';
             for (let key in data) {
-                html += '<p><strong>' + key + ':</strong> ' + data[key] + '</p>';
+                html += '<p><strong>' + escape(key) + ':</strong> ' + escape(data[key]) + '</p>';
             }
             html += '<p><strong>Erstellt am:</strong> ' + row.dataset.created + '</p>';
+
             document.getElementById('details').innerHTML = html;
             document.getElementById('modal').showModal();
         }
@@ -197,6 +200,15 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             modal.close();
         }
         });
+
+        function escape(htmlStr) {
+          return htmlStr.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");        
+
+        }
 
     </script>
 </body>
