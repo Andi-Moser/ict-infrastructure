@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
 // SQLite init
@@ -38,12 +41,31 @@ if (isset($_GET['toggle'])) {
 
 // Query entries
 if (!empty($_SESSION['own_only'])) {
-    $stmt = $db->prepare("SELECT * FROM posts WHERE session_id = :sid ORDER BY created_at DESC LIMIT 50");
-    $stmt->execute([':sid' => session_id()]);
+  $stmt = $db->query("SELECT * FROM posts ORDER BY created_at DESC LIMIT 50");
 } else {
-    $stmt = $db->query("SELECT * FROM posts ORDER BY created_at DESC LIMIT 50");
+  $stmt = $db->prepare("SELECT * FROM posts WHERE session_id = :sid ORDER BY created_at DESC LIMIT 50");
+  $stmt->execute([':sid' => session_id()]);
 }
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Extract the most used fieldnames
+$fieldnames = [];
+foreach ($rows as $row) {
+    $data = json_decode($row['data'], true) ?: [];
+    foreach (array_keys($data) as $key) {
+        if (in_array(strtolower($key), ['comment', 'kommentar', 'bemerkung'])) {
+            continue;
+        }
+        if (!isset($fieldnames[$key])) {
+            $fieldnames[$key] = 0;
+        }
+        $fieldnames[$key]++;
+    }
+}
+arsort($fieldnames);
+
+// keep the first 3
+$fieldnames = array_slice($fieldnames, 0, 3, true);
 ?>
 <!DOCTYPE html>
 <html>
@@ -58,10 +80,10 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="p-4 bg-gray-200">
 <div class="max-w-[1280px] mx-auto my-12 bg-white p-10 rounded-2xl shadow">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Geispeicherte Einträge</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Gespeicherte Einträge</h2>
 
         <div class="flex justify-end">
-            <a class="underline" href="?toggle=1">Ansicht: <?php echo !empty($_SESSION['own_only']) ? 'Eigene Einträge' : 'Alle Einträge'; ?></a>
+            <a class="underline" href="?toggle=1">Ansicht: <?php echo !empty($_SESSION['own_only']) ? 'Alle Einträge' : 'Eigene Einträge'; ?></a>
         </div>
 
         <div class="shadow-md sm:rounded-lg">
@@ -69,28 +91,40 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <thead class="text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left">ID</th>
-                        <th class="px-6 py-3 text-left">Name</th>
-                        <th class="px-6 py-3 text-left">Vorname</th>
-                        <th class="px-6 py-3 text-left">E-Mail</th>
+                        <?php foreach ($fieldnames as $fieldname => $count): ?>
+                            <th class="px-6 py-3 text-left"><?= htmlspecialchars(ucfirst($fieldname)) ?></th>
+                        <?php endforeach; ?>
                         <th class="px-6 py-3 text-left">Anzahl Felder</th>
                         <th class="px-6 py-3 text-left">Erstellt am</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $row): 
+                    <?php foreach ($rows as $i => $row):
                         $data = json_decode($row['data'], true) ?: [];
-                        $name = $data['name'] ?? '';
-                        $firstname = $data['firstname'] ?? data['vorname'] ?? '';
-                        $email = $data['email'] ?? '';
-                        $comment = $data['comment'] ?? '';
+                        $name = $data['name'] ?? $data['lastname'] ?? $data['nachname'] ?? $data['Nachname'] ?? $data['Name'] ?? $data['Lastname'] ??   '';
+                        $firstname = $data['firstname'] ?? $data['vorname'] ?? $data['Firstname'] ?? $data['Vorname'] ??  '';
+                        $email = $data['email'] ?? $data['e-mail'] ?? $data['Email'] ?? $data['E-mail'] ?? $data['E-Mail'] ?? '';
                     ?>
-                        <tr class="cursor-pointer odd:bg-white even:bg-gray-50 border-b border-gray-200" onclick="showDetails(this)" data-json='<?= str_replace("\\r\\n", "<br>", nl2br(json_encode($data, JSON_HEX_APOS | JSON_HEX_QUOT))) ?>' data-created='<?= date('d.m.Y H:i:s', $row['created_at']) ?>'>
+                        <tr class="cursor-pointer <?= $i % 2 === 0 ? 'bg-white' : 'bg-gray-200' ?> border-b border-gray-200" onclick="showDetails(<?= $i ?>)">
                             <td class="px-6 py-3"><?= $row['id'] ?></td>
-                            <td class="px-6 py-3"><?= htmlspecialchars($name) ?></td>
-                            <td class="px-6 py-3"><?= htmlspecialchars($firstname) ?></td>
-                            <td class="px-6 py-3"><?= htmlspecialchars($email) ?></td>
+                            <?php foreach ($fieldnames as $fieldname => $count): ?>
+                                <td class="px-6 py-3"><?= htmlspecialchars($data[$fieldname] ?? '') ?></td>
+                            <?php endforeach; ?>
                             <td class="px-6 py-3"><?= count($data) ?></td>
                             <td class="px-6 py-3"><?= date('d.m.Y H:i:s', $row['created_at']) ?></td>
+                        </tr>
+                        <tr class="hidden" data-row="<?= $i ?>">
+                            <td colspan="6" class="<?= $i % 2 === 0 ? 'bg-white' : 'bg-gray-200' ?>">
+                                <!-- Details -->
+                                <div id="details" class="p-4">
+                                    <?php
+                                    foreach ($data as $key => $value) {
+                                        echo '<p><strong>' . htmlspecialchars($key) . ':</strong> ' . htmlspecialchars($value) . '</p>';
+                                    }
+                                    echo '<p><strong>Erstellt am:</strong> ' . date('d.m.Y H:i:s', $row['created_at']) . '</p>';
+                                    ?>
+                                </div>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -118,7 +152,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <input 
         id="firstname"
         type="text" 
-        name="firstname" 
+        name="firstname"
         placeholder="Vorname"
         class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
@@ -156,47 +190,15 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </form>
 </div>
-
-
-    <dialog id="modal" class="rounded-2xl shadow-xl p-6 w-128 backdrop:bg-black/50 mx-auto mt-24">
-        <div class="modal-box">
-            <h2 class="text-xl font-semibold mb-2">Details</h2>
-            <div id="details"></div>
-            <div class="flex justify-end space-x-2">
-            <button id="close" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded-lg">Close</button>
-            </div>
-        </div>
-    </dialog>
     <script>
         function showDetails(row) {
-            const data = JSON.parse(row.dataset.json);
-            let html = '';
-            for (let key in data) {
-                html += '<p><strong>' + key + ':</strong> ' + data[key] + '</p>';
+            const detailRow = document.querySelector(`tr[data-row='${row}']`);
+            if (detailRow.classList.contains('hidden')) {
+                detailRow.classList.remove('hidden');
+            } else {
+                detailRow.classList.add('hidden');
             }
-            html += '<p><strong>Erstellt am:</strong> ' + row.dataset.created + '</p>';
-            document.getElementById('details').innerHTML = html;
-            document.getElementById('modal').showModal();
         }
-
-        document.getElementById('close').addEventListener('click', function() {
-            document.getElementById('modal').close();
-        })
-        const modal = document.getElementById('modal');
-        const box = modal.querySelector('.modal-box');
-
-        // Close on backdrop click
-        modal.addEventListener('click', e => {
-        const rect = box.getBoundingClientRect();
-        if (
-            e.clientX < rect.left ||
-            e.clientX > rect.right ||
-            e.clientY < rect.top ||
-            e.clientY > rect.bottom
-        ) {
-            modal.close();
-        }
-        });
 
     </script>
 </body>
