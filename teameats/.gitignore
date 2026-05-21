@@ -1,0 +1,23 @@
+# Environment — contains secrets, differs per machine
+.env
+
+# SQLite database — runtime data, not source code
+data/
+
+# Composer (if ever added)
+vendor/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+docker-compose.override.yml

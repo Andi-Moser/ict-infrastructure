@@ -1,0 +1,26 @@
+[
+  {
+    "id": "schnitzel",
+    "name": "Schnitzel-Spitzel",
+    "description": "Der Klassiker, feine Schnitzelstreifen knusprig frittiert mit Pommes.",
+    "image_url": "/images/schnitzel.jpeg"
+  },
+  {
+    "id": "pizza",
+    "name": "Pizza vom Italiener",
+    "description": "Super Holzofenpizza vom Restaurant Kuonimatt.",
+    "image_url": "/images/pizza.jpg"
+  },
+  {
+    "id": "hotdogs",
+    "name": "Hotdogs",
+    "description": "Klassische HotDogs, bei uns in der Küche frisch zubereitet.",
+    "image_url": "/images/hotdogs.jpg"
+  },
+  {
+    "id": "pizza-kebap",
+    "name": "Kebap/Pizza vom Dönerladen",
+    "description": "Bestellt wird beim Sofra Döner.",
+    "image_url": "/images/kebap.avif"
+  }
+]
