@@ -3,24 +3,28 @@
     "id": "schnitzel",
     "name": "Schnitzel-Spitzel",
     "description": "Der Klassiker, feine Schnitzelstreifen knusprig frittiert mit Pommes.",
-    "image_url": "/images/schnitzel.jpeg"
+    "image_url": "/images/schnitzel.jpeg",
+    "menu_url": "https://schnitzel-spitzel.ch/assets/files/Schnitzel-Spitzel_Speise-Getraenkekarte.pdf"
   },
   {
     "id": "pizza",
     "name": "Pizza vom Italiener",
     "description": "Super Holzofenpizza vom Restaurant Kuonimatt.",
-    "image_url": "/images/pizza.jpg"
+    "image_url": "/images/pizza.jpg",
+    "menu_url": "https://restaurant-kuonimatt.ch/wp-content/uploads/2022/12/KU-Speisekarte-DE-2022-10.pdf"
   },
   {
     "id": "hotdogs",
     "name": "Hotdogs",
     "description": "Klassische HotDogs, bei uns in der Küche frisch zubereitet.",
-    "image_url": "/images/hotdogs.jpg"
+    "image_url": "/images/hotdogs.jpg",
+    "menu_url": null
   },
   {
     "id": "pizza-kebap",
     "name": "Kebap/Pizza vom Dönerladen",
     "description": "Bestellt wird beim Sofra Döner.",
-    "image_url": "/images/kebap.avif"
+    "image_url": "/images/kebap.avif",
+    "menu_url": "https://www.restaurant-sofra.ch/"
   }
 ]

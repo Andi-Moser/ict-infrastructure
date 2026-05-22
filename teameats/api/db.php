@@ -23,6 +23,13 @@ function get_db(): PDO
 
 function migrate(PDO $db): void
 {
+    // Drop and recreate if menu_url column is missing (acceptable data loss per project decision)
+    $cols = $db->query("PRAGMA table_info(ideas)")->fetchAll();
+    if ($cols && !array_filter($cols, fn($c) => $c['name'] === 'menu_url')) {
+        $db->exec("DROP TABLE IF EXISTS registrations");
+        $db->exec("DROP TABLE IF EXISTS ideas");
+    }
+
     $db->exec("
         CREATE TABLE IF NOT EXISTS ideas (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +37,7 @@ function migrate(PDO $db): void
             idea        TEXT NOT NULL,
             description TEXT,
             image_url   TEXT,
+            menu_url    TEXT,
             proposed_by TEXT NOT NULL,
             email       TEXT NOT NULL,
             created_at  TEXT NOT NULL DEFAULT (datetime('now'))

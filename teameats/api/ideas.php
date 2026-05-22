@@ -50,14 +50,15 @@ function create_idea(): void
 
     $db   = get_db();
     $stmt = $db->prepare("
-        INSERT INTO ideas (date, idea, description, image_url, proposed_by, email)
-        VALUES (:date, :idea, :description, :image_url, :proposed_by, :email)
+        INSERT INTO ideas (date, idea, description, image_url, menu_url, proposed_by, email)
+        VALUES (:date, :idea, :description, :image_url, :menu_url, :proposed_by, :email)
     ");
     $stmt->execute([
         ':date'        => $data['date'],
         ':idea'        => $data['idea'],
         ':description' => $data['description'] ?? null,
         ':image_url'   => $data['image_url']   ?? null,
+        ':menu_url'    => $data['menu_url']    ?? null,
         ':proposed_by' => $data['proposed_by'],
         ':email'       => $data['email'],
     ]);

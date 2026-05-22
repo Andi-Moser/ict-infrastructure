@@ -33,7 +33,7 @@ createApp({
     // Add idea modal
     const showAddModal = ref(false);
     const formType     = ref('predefined');
-    const form         = ref({ date: '', predefinedId: '', idea: '', description: '', proposed_by: '', email: '' });
+    const form         = ref({ date: '', predefinedId: '', idea: '', description: '', menu_url: '', proposed_by: '', email: '' });
     const formError    = ref('');
 
     // Detail modal
@@ -91,7 +91,7 @@ createApp({
     // ── Add idea modal ────────────────────────────────────────────────────────
 
     function openAddModal() {
-      form.value      = { date: '', predefinedId: '', idea: '', description: '', proposed_by: '', email: '' };
+      form.value      = { date: '', predefinedId: '', idea: '', description: '', menu_url: '', proposed_by: '', email: '' };
       formType.value  = 'predefined';
       formError.value = '';
       showAddModal.value = true;
@@ -103,6 +103,7 @@ createApp({
 
     function onPredefinedChange() {
       form.value.description = selectedPredefined.value?.description ?? '';
+      form.value.menu_url    = selectedPredefined.value?.menu_url    ?? '';
     }
 
     async function submitIdea() {
@@ -127,6 +128,7 @@ createApp({
             idea:        ideaName,
             description: form.value.description.trim() || null,
             image_url:   formType.value === 'predefined' ? (selectedPredefined.value?.image_url ?? null) : null,
+            menu_url:    form.value.menu_url.trim() || null,
             proposed_by: form.value.proposed_by.trim(),
             email:       form.value.email.trim(),
           }),
