@@ -21,7 +21,11 @@ services:
     # You should update the version here to match the latest
     # release of BookStack: https://github.com/BookStackApp/BookStack/releases
     # You'll change this when wanting to update the version of BookStack used.
-    image: lscr.io/linuxserver/bookstack:version-v26.03.3
+    # Temporarily on "latest" + pull_policy always, so the next "docker compose up" pulls the first
+    # image built with the PHP2Shell fix (CVE-2026-109618 / CVE-2026-109619). Once it is running,
+    # pin this back to a fixed "version-vXX.XX.X" tag.
+    image: lscr.io/linuxserver/bookstack:latest
+    pull_policy: always
     container_name: bookstack
     environment:
       - PUID=1000

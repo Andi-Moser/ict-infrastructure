@@ -11,6 +11,8 @@ services:
   server:
     build:
       context: .
+    # Always rebuild on "docker compose up", so a changed base image in the Dockerfile is picked up.
+    pull_policy: build
     ports:
       - 9000:80
     volumes:
