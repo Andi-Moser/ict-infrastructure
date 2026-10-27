@@ -11,7 +11,7 @@ server {
    }
 
    location / {
-       return 301 https://moodle.ict-bz.ch$request_uri;
+       return 301 https://cloud.ict-bz.ch$request_uri;
    }
 }
 
